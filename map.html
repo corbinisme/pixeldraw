@@ -1,0 +1,95 @@
+<html>
+<head>
+<style>
+body {
+	margin: 0;
+	padding: 0;
+}
+.brick {
+	display: inline-block;
+	float: left;
+	width: 10px;
+	height: 10px;
+	background: #333;
+}
+.brick:hover {
+	background:#222;
+}
+.brick.active{
+	background: #336688;
+}
+.calc {position: fixed;
+top: 5px; right: 5px;
+padding:4px; display: inline-block;
+background: #ddd;}
+#output {
+	position: fixed;
+	display: none;
+	bottom: 0;
+	right: 0;
+}
+</style>
+</head>
+<body>
+	<textarea id="output"></textarea>
+<a href="#" class="calc">Calculate</a>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script>
+var master = [];
+var newMaster = [];
+var order = 1;
+var masterStringForreal ="";
+alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+function make(){
+	var xcount = 9000;
+	for(var i=0;i<xcount; i++){
+		var $block = $(document.createElement("a"));
+		$block.attr("num", i);$block.addClass("brick");
+		$("body").append($block)
+	}
+
+	$(document).on("click", ".brick", function(){
+		order++;
+		$(this).attr("data-order", order);
+		var pos = $(this).position();
+		newMaster.push(pos.top + " " + pos.left);
+
+		$(this).toggleClass("active");
+
+	});
+	$(document).on("click", ".calc", function(){
+		$(".brick.active").each(function(){
+			var thisOrder = parseInt($(this).attr("data-order"));
+			var pos = $(this).position();
+			console.log(pos)
+			var entry =  "*" + thisOrder + "*" + pos.top + " " + pos.left;
+			master[alphabet[thisOrder]] = entry;
+		});
+		console.log(master);
+		var checkArr = master.sort();
+		console.log(checkArr);
+		var masterStringForreal = "";
+
+		for (var property in checkArr) {
+		  if (checkArr.hasOwnProperty(property)) {
+		    // Do things here
+		    console.log(checkArr[property]);
+		    masterStringForreal += checkArr[property]  + ",";
+		  }
+		}
+
+
+		console.log(masterStringForreal);
+
+		console.log("/////////////AHHH?/////////////");
+		console.log(newMaster);
+		//var masterString = checkArr.join(",");
+		var outputtext = "POLYGON((" + newMaster.join(",") + "))";
+		$("#output").html(outputtext).show();
+
+	});
+}
+make();
+</script>
+</body>
+</html>
